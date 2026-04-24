@@ -151,6 +151,17 @@
   .section-subtitle{font-size:11.5px;color:#9A968F;letter-spacing:.02em;font-weight:400}
   .section-more{font-size:12.5px;color:#7A766F;display:inline-flex;align-items:center;gap:3px}
   .section-more:hover{color:#1A1A1A}
+  .section-actions{display:inline-flex;align-items:center;gap:14px}
+  .section-action-btn{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:5px 11px;border-radius:6px;
+    background:#F4F2EE;border:1px solid #E0DBD2;
+    font-family:inherit;font-size:12px;color:#3D352B;font-weight:500;
+    cursor:pointer;line-height:1.2;
+  }
+  .section-action-btn:hover{background:#EDE8DD;border-color:#C9C3BA;color:#1A1A1A}
+  .section-action-btn .plus{font-size:14px;color:#7A766F;font-weight:400;line-height:1}
+  .section-action-btn:hover .plus{color:#1A1A1A}
 
   /* 班级卡 */
   .class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -509,6 +520,7 @@
         <button data-v="B" class="active">框下</button>
         <button data-v="C" class="killed" title="淘汰：太克制，差异化看不见，老板会问『飞象的智能体现在哪？』">标题下</button>
         <button data-v="D" class="killed" title="淘汰：演示场景里没人会去点开 = context stack 卖点失踪">折叠</button>
+        <button data-v="E" class="killed" title="坑：placeholder 不可点（必须重敲）/ 一敲字就消失 / 多行兼容差，只能塞 1 条建议 = 浪费 3 条形态">框内灰字</button>
       </div>
     </div>
 
@@ -679,14 +691,19 @@
             <h2>知识库</h2>
             <span class="section-subtitle">本周新增 12 篇</span>
           </div>
-          <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+          <div class="section-actions">
+            <button class="section-action-btn" id="aiRecordBtn" title="拍照 / 上传 Word / PDF，AI 自动识别题目并入「我的知识库」">
+              <span class="plus">+</span> AI 录题
+            </button>
+            <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
         <!-- 改进 ⑥：知识库三张卡左 border 区分所有权 -->
         <div class="kb-grid">
           <div class="kb-card mine">
             <div class="kb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><circle cx="12" cy="7" r="4"/></svg></div>
             <div class="kb-name">我的知识库</div>
-            <div class="kb-desc">128 篇文档 · 你上传的教学材料</div>
+            <div class="kb-desc">128 篇 · 你上传的教学材料 · 支持 AI 录题入库</div>
             <span class="kb-tag" style="color:#B89A66">个人</span>
           </div>
           <div class="kb-card school">
@@ -947,7 +964,10 @@ const TPL = {
   D: () => `
     <div class="sug-collapsed">
       <button id="sugExpand">从这里开始 · 3 条</button>
-    </div>`
+    </div>`,
+
+  /* E：框内灰字（placeholder） · 对照组，凸显坑点 */
+  E: () => ''
 };
 
 function clearSlots(){
@@ -982,6 +1002,11 @@ composerInput.addEventListener('keydown', (e) => {
 function applyPos(pos){
   clearSlots();
 
+  /* 切回非 E 时，恢复默认 placeholder（除非当前 chip 已锁了 placeholder） */
+  if(pos !== 'E' && !activeChip){
+    composerInput.placeholder = DEFAULT_PLACEHOLDER;
+  }
+
   if(pos === 'A'){
     slotA.innerHTML = TPL.A();
   } else if(pos === 'B'){
@@ -997,6 +1022,9 @@ function applyPos(pos){
       slotB.innerHTML = TPL.B();
       bindPills();
     });
+  } else if(pos === 'E'){
+    /* 把首条建议塞进 placeholder（只能塞 1 条 = 该方案的天花板） */
+    composerInput.placeholder = '比如：' + SUGGESTIONS[0];
   }
   bindPills();
 
@@ -1053,6 +1081,14 @@ document.querySelectorAll('.lab-btns').forEach(group => {
     APPLY[key](btn.dataset.v);
   });
 });
+
+/* AI 录题（演示阶段：先弹提示） */
+const aiRecordBtn = document.getElementById('aiRecordBtn');
+if(aiRecordBtn){
+  aiRecordBtn.addEventListener('click', () => {
+    alert('（演示）AI 录题：\n\n上传 Word / PDF / 拍照单题 → AI 自动识别题干 + 选项 + 答案 + 知识点 → 入「我的知识库」→ 后续可被 AI 组题直接调用。');
+  });
+}
 
 /* 收起 / 展开实验台 */
 const labPanel = document.getElementById('labPanel');

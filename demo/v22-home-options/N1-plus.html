@@ -171,6 +171,17 @@
   .section-subtitle{font-size:11.5px;color:#9A968F;letter-spacing:.02em;font-weight:400}
   .section-more{font-size:12.5px;color:#7A766F;display:inline-flex;align-items:center;gap:3px}
   .section-more:hover{color:#1A1A1A}
+  .section-actions{display:inline-flex;align-items:center;gap:14px}
+  .section-action-btn{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:5px 11px;border-radius:6px;
+    background:#F4F2EE;border:1px solid #E0DBD2;
+    font-family:inherit;font-size:12px;color:#3D352B;font-weight:500;
+    cursor:pointer;line-height:1.2;
+  }
+  .section-action-btn:hover{background:#EDE8DD;border-color:#C9C3BA;color:#1A1A1A}
+  .section-action-btn .plus{font-size:14px;color:#7A766F;font-weight:400;line-height:1}
+  .section-action-btn:hover .plus{color:#1A1A1A}
 
   /* 班级卡 */
   .class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -423,7 +434,7 @@
           <button class="sug-block-close" id="sugClose" title="本周不再提示">✕</button>
         </div>
         <div class="pill-row">
-          <button class="pill" data-fill="高一(3)班昨天扫的 48 份作文还没分析"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>高一(3)班昨天扫的 48 份作文还没分析</button>
+          <button class="pill" data-fill="高一(3)班 48 份《我的母亲》要重点讲评什么？"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>高一(3)班 48 份《我的母亲》要重点讲评什么？</button>
           <button class="pill" data-fill="高一(5)班议论文有 7 个学生立论偏题，做一份订正小测">高一(5)班议论文有 7 个学生立论偏题，做一份订正小测</button>
           <button class="pill" data-fill="为下周《我与地坛》设计 3 道思辨型题">为下周《我与地坛》设计 3 道思辨型题</button>
         </div>
@@ -441,7 +452,7 @@
           <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </div>
         <div class="class-grid">
-          <div class="class-card">
+          <div class="class-card" data-jump="../v25-essay-analytics/p5-essay-analytics.html" title="去看班级最近批次">
             <div class="class-name">高一(3)班 <span style="font-size:11px;color:#9A968F;font-weight:400">48 人</span></div>
             <div class="class-meta">高一语文</div>
             <div class="class-recent">3 天前 · 飞象高扫批改 48 份《我的母亲》</div>
@@ -468,7 +479,7 @@
           <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </div>
         <div class="task-list">
-          <div class="task-card">
+          <div class="task-card" data-jump="../v25-essay-analytics/p5-essay-analytics.html" title="去看作文学情">
             <div class="task-type"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/></svg></div>
             <div class="task-body">
               <div class="task-name">议论文《我的母亲》批改</div>
@@ -505,14 +516,19 @@
             <h2>知识库</h2>
             <span class="section-subtitle">本周新增 12 篇</span>
           </div>
-          <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+          <div class="section-actions">
+            <button class="section-action-btn" id="aiRecordBtn" title="拍照 / 上传 Word / PDF，AI 自动识别题目并入「我的知识库」">
+              <span class="plus">+</span> AI 录题
+            </button>
+            <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
         <!-- 改进 ⑥：知识库三张卡左 border 区分所有权 -->
         <div class="kb-grid">
           <div class="kb-card mine">
             <div class="kb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><circle cx="12" cy="7" r="4"/></svg></div>
             <div class="kb-name">我的知识库</div>
-            <div class="kb-desc">128 篇文档 · 你上传的教学材料</div>
+            <div class="kb-desc">128 篇 · 你上传的教学材料 · 支持 AI 录题入库</div>
             <span class="kb-tag" style="color:#B89A66">个人</span>
           </div>
           <div class="kb-card school">
@@ -684,13 +700,36 @@ modesRow.addEventListener('click', (e) => {
 
 panelClose.addEventListener('click', resetComposer);
 
-/* 飞象建议 pill → 填入输入框（用 data-fill 避免 SVG 文本污染） */
+/* ============ 全局跳转规则（v8.4 反转后）============
+   任何带 data-jump 的元素，点击即跳转到对应专业页（如 P5 作文学情页）。
+   覆盖：
+   - 飞象建议 pill 1（看类建议）
+   - 班级卡（点 → 班级最近批次）
+   - 任务卡（点 → 该任务对应的学情/批改）
+   "看类" 建议 / 实体卡 = 默认入口走专业页；"做类" 走对话框（data-fill）。
+*/
+document.querySelectorAll('[data-jump]').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.addEventListener('click', () => {
+    location.href = el.dataset.jump;
+  });
+});
+
+/* 做类 pill → 填入对话框（让老师改完再发送，让 AI 做事） */
 document.querySelectorAll('.sug-block .pill[data-fill]').forEach(p => {
   p.addEventListener('click', () => {
     composerInput.value = p.dataset.fill;
     composerInput.focus();
   });
 });
+
+/* AI 录题（演示阶段：先弹提示） */
+const aiRecordBtn = document.getElementById('aiRecordBtn');
+if(aiRecordBtn){
+  aiRecordBtn.addEventListener('click', () => {
+    alert('（演示）AI 录题：\n\n上传 Word / PDF / 拍照单题 → AI 自动识别题干 + 选项 + 答案 + 知识点 → 入「我的知识库」→ 后续可被 AI 组题直接调用。');
+  });
+}
 
 /* 关闭建议区（"本周不再提示"） */
 const sugBlock = document.getElementById('sugBlock');
@@ -729,6 +768,11 @@ sendBtn.addEventListener('click', () => {
   }
   /* 主链路兜底：作文批改 chip 已选但还没选批次 → 也允许跳（演示更顺） */
   if(activeChip && activeChip.dataset.chip === '批改'){
+    goDialog();
+    return;
+  }
+  /* 旁路：composer 有内容（来自 pill 填入或老师手打）→ 直接进对话页 */
+  if(composerInput.value.trim()){
     goDialog();
     return;
   }
