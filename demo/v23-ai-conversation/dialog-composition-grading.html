@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>飞象 AI · 对话 · 高一(3)班议论文学情</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Source Han Sans SC","Helvetica Neue",sans-serif;
+    background:#FAFAF8;color:#1A1A1A;font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  .layout{display:flex;height:100vh;overflow:hidden}
+
+  /* ============ 侧边栏（同 N1-plus） ============ */
+  .sidebar{
+    width:240px;flex-shrink:0;background:#F4F2EE;border-right:1px solid #E8E5E0;
+    display:flex;flex-direction:column;padding:14px 10px;
+  }
+  .sb-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 16px}
+  .sb-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;letter-spacing:.02em}
+  .sb-logo .dot{width:18px;height:18px;border-radius:5px;background:#1A1A1A;display:grid;place-items:center;color:#FAFAF8;font-size:11px;font-weight:600}
+  .sb-fold{width:26px;height:26px;border-radius:5px;display:grid;place-items:center;color:#888;opacity:.6}
+  .sb-fold:hover{background:#EDEAE5;opacity:1}
+  .sb-section{margin-top:6px}
+  .sb-section-title{font-size:11px;color:#9A968F;padding:10px 8px 4px;letter-spacing:.05em;font-weight:500;text-transform:uppercase}
+  .sb-item{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;color:#3A3A3A;font-size:13.5px;cursor:pointer}
+  .sb-item:hover{background:#EDEAE5}
+  .sb-item.active{background:#E5E1DB;color:#1A1A1A;font-weight:500}
+  .sb-item svg{flex-shrink:0;color:#7A766F}
+  .sb-item.active svg{color:#1A1A1A}
+  .sb-item .badge{margin-left:auto;font-size:11px;color:#9A968F}
+  .sb-item.muted{color:#9A968F;font-size:12.5px}
+  .sb-item.muted:hover{color:#3A3A3A}
+  .sb-spacer{flex:1}
+  .sb-foot{padding:8px;border-top:1px solid #E8E5E0;margin-top:8px}
+  .sb-user{display:flex;align-items:center;gap:9px;padding:4px}
+  .sb-avatar{width:26px;height:26px;border-radius:50%;background:#D9D4CC;display:grid;place-items:center;font-size:12px;font-weight:600;color:#5A5550}
+  .sb-uname{font-size:13px}
+  .sb-urole{font-size:11px;color:#9A968F;margin-top:1px}
+
+  /* ============ 主区 ============ */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+  /* 顶部 context 条 */
+  .ctxbar{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 24px;border-bottom:1px solid #ECE9E2;
+    background:#FAFAF8;flex-shrink:0;
+  }
+  .ctx-back{
+    width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:#7A766F;
+  }
+  .ctx-back:hover{background:#F0EDE7;color:#1A1A1A}
+  .ctx-pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:5px 11px 5px 9px;border-radius:999px;
+    background:#FBF7EE;border:1px solid #F0E8D2;
+    font-size:12.5px;color:#5A4F38;
+  }
+  .ctx-pill .pin{width:5px;height:5px;border-radius:50%;background:#C9A76E;flex-shrink:0}
+  .ctx-pill strong{font-weight:600;color:#3A3025}
+  .ctx-pill .sep{color:#C9C0B0}
+  .ctx-pill .open{color:#A89A78;display:inline-flex;align-items:center;gap:2px}
+  .ctx-pill .open:hover{color:#7A6840}
+  .ctx-actions{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .ctx-btn{
+    padding:5px 11px;border-radius:7px;font-size:12.5px;color:#5A5550;
+    border:1px solid transparent;
+  }
+  .ctx-btn:hover{background:#F0EDE7;color:#1A1A1A}
+  .ctx-btn.primary{background:#1A1A1A;color:#FAFAF8}
+  .ctx-btn.primary:hover{background:#000}
+
+  /* 对话流容器 */
+  .stream{flex:1;overflow-y:auto;padding:32px 24px 24px}
+  .stream-inner{max-width:780px;margin:0 auto}
+
+  /* 消息块 */
+  .msg{margin-bottom:32px}
+  .msg-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .msg-avatar{
+    width:24px;height:24px;border-radius:6px;display:grid;place-items:center;
+    font-size:11px;font-weight:600;flex-shrink:0;
+  }
+  .msg-avatar.user{background:#D9D4CC;color:#5A5550}
+  .msg-avatar.ai{background:#1A1A1A;color:#FAFAF8;font-size:12px}
+  .msg-name{font-size:12.5px;color:#5A5550;font-weight:500}
+  .msg-time{font-size:11.5px;color:#A8A39B}
+
+  /* 用户消息体 */
+  .msg.user .msg-body{
+    padding-left:32px;
+    font-size:15px;color:#1A1A1A;line-height:1.65;
+  }
+  .msg.user .selected-batch{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:3px 9px;border-radius:6px;background:#F4F2EE;
+    font-size:12.5px;color:#3A3A3A;margin-right:8px;
+  }
+  .msg.user .selected-batch svg{color:#7A766F}
+
+  /* AI 消息体 */
+  .msg.ai .msg-body{
+    padding-left:32px;
+    font-size:14.5px;color:#2A2A2A;line-height:1.75;
+  }
+  .msg.ai p{margin-bottom:10px}
+  .msg.ai p:last-child{margin-bottom:0}
+  .msg.ai b{font-weight:600;color:#1A1A1A}
+  .msg.ai .em{color:#A87E2C;font-weight:500}
+
+  /* 学情快照卡 */
+  .snapshot{
+    margin:14px 0 16px;
+    background:#FFFFFF;border:1px solid #E8E5E0;border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 1px 0 rgba(0,0,0,.02), 0 4px 14px -8px rgba(60,50,40,.08);
+  }
+  .snap-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:14px 16px 8px;border-bottom:1px solid #F0EDE7;
+  }
+  .snap-title{font-size:13.5px;font-weight:600;color:#1A1A1A;display:flex;align-items:center;gap:8px}
+  .snap-title .badge{
+    font-size:10.5px;padding:1px 6px;border-radius:3px;
+    background:#FBF7EE;color:#A89A78;font-weight:500;
+  }
+  .snap-meta{font-size:11.5px;color:#9A968F}
+  .snap-meta a{color:#7A6840;margin-left:6px}
+  .snap-meta a:hover{color:#5A4F38;text-decoration:underline}
+
+  /* 三列指标 */
+  .snap-metrics{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:1px solid #F0EDE7;
+  }
+  .snap-metric{
+    padding:14px 16px;border-right:1px solid #F0EDE7;
+  }
+  .snap-metric:last-child{border-right:none}
+  .snap-metric .lbl{font-size:11px;color:#9A968F;letter-spacing:.04em;font-weight:500}
+  .snap-metric .val{font-size:22px;color:#1A1A1A;font-weight:500;letter-spacing:-.01em;margin-top:4px;display:flex;align-items:baseline;gap:4px}
+  .snap-metric .val .unit{font-size:12px;color:#9A968F;font-weight:400}
+  .snap-metric .sub{font-size:11.5px;color:#7A766F;margin-top:3px}
+  .snap-metric .sub .up{color:#5A8460}
+  .snap-metric .sub .down{color:#A86A4F}
+
+  /* 维度 + 学生分布双列 */
+  .snap-grid{
+    display:grid;grid-template-columns:1.1fr 1fr;
+    border-bottom:1px solid #F0EDE7;
+  }
+  .snap-col{padding:14px 16px}
+  .snap-col + .snap-col{border-left:1px solid #F0EDE7}
+  .snap-col-title{font-size:11.5px;color:#7A766F;font-weight:500;margin-bottom:10px;letter-spacing:.02em}
+
+  /* 维度条 */
+  .dim-list{display:flex;flex-direction:column;gap:7px}
+  .dim-row{display:flex;align-items:center;gap:8px}
+  .dim-name{font-size:12px;color:#3A3A3A;width:64px;flex-shrink:0}
+  .dim-bar{
+    flex:1;height:6px;border-radius:3px;background:#F0EDE7;overflow:hidden;
+    position:relative;
+  }
+  .dim-bar::before{
+    content:"";position:absolute;top:0;left:0;height:100%;
+    background:#C9A76E;border-radius:3px;width:var(--w,50%);
+  }
+  .dim-bar.low::before{background:#D69478}
+  .dim-bar.mid::before{background:#C9A76E}
+  .dim-bar.high::before{background:#7BA37D}
+  .dim-val{font-size:11.5px;color:#7A766F;width:36px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+
+  /* 学生分布柱状 */
+  .dist-rows{display:flex;flex-direction:column;gap:6px}
+  .dist-row{display:flex;align-items:center;gap:8px;font-size:12px}
+  .dist-row .seg{
+    width:9px;height:9px;border-radius:2px;flex-shrink:0;
+  }
+  .dist-row .lbl{color:#3A3A3A;width:48px}
+  .dist-row .bar{
+    flex:1;height:6px;border-radius:3px;background:#F0EDE7;overflow:hidden;position:relative;
+  }
+  .dist-row .bar::before{
+    content:"";position:absolute;top:0;left:0;height:100%;border-radius:3px;
+    width:var(--w,30%);background:var(--c,#C9A76E);
+  }
+  .dist-row .num{color:#7A766F;width:36px;text-align:right;font-variant-numeric:tabular-nums}
+
+  /* 焦点学生 */
+  .snap-focus{padding:12px 16px}
+  .focus-title{font-size:11.5px;color:#7A766F;font-weight:500;margin-bottom:8px;letter-spacing:.02em;display:flex;align-items:center;justify-content:space-between}
+  .focus-title a{font-size:11.5px;color:#7A6840;font-weight:400}
+  .focus-title a:hover{color:#5A4F38;text-decoration:underline}
+  .focus-list{display:flex;flex-direction:column;gap:0}
+  .focus-row{
+    display:flex;align-items:center;gap:10px;padding:7px 0;
+    border-top:1px dashed #F0EDE7;font-size:12.5px;
+  }
+  .focus-row:first-child{border-top:none}
+  .focus-row .name{font-weight:500;color:#1A1A1A;width:60px;flex-shrink:0}
+  .focus-row .score{font-size:11.5px;color:#7A766F;width:36px;flex-shrink:0;font-variant-numeric:tabular-nums}
+  .focus-row .tag{
+    font-size:10.5px;padding:1px 6px;border-radius:3px;
+    background:#FBF7EE;color:#A89A78;flex-shrink:0;font-weight:500;
+  }
+  .focus-row .tag.warn{background:#FDF1E8;color:#B47340}
+  .focus-row .tag.good{background:#EAEFE6;color:#5A8460}
+  .focus-row .why{flex:1;color:#5A5550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .focus-row .open{
+    color:#7A766F;font-size:11.5px;flex-shrink:0;
+    display:inline-flex;align-items:center;gap:2px;
+  }
+  .focus-row .open:hover{color:#1A1A1A}
+
+  /* 下一步建议 chip */
+  .next-block{margin-top:14px}
+  .next-label{
+    font-size:11.5px;color:#A89A78;letter-spacing:.04em;font-weight:500;
+    margin-bottom:9px;display:flex;align-items:center;gap:6px;
+  }
+  .next-label::before{content:"";width:5px;height:5px;border-radius:50%;background:#C9A76E}
+  .next-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .next-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 12px 6px 10px;border-radius:8px;
+    background:#FFFFFF;border:1px solid #DCD7CE;
+    color:#3A3A3A;font-size:12.5px;
+    transition:all .12s;
+  }
+  .next-chip:hover{background:#FBF9F5;border-color:#C9A76E;color:#1A1A1A}
+  .next-chip svg{color:#7A766F;flex-shrink:0}
+  .next-chip:hover svg{color:#A87E2C}
+  .next-chip.primary{
+    background:#1A1A1A;color:#FAFAF8;border-color:#1A1A1A;
+  }
+  .next-chip.primary:hover{background:#000;color:#FFFFFF}
+  .next-chip.primary svg{color:#FAFAF8}
+
+  /* 底部追问 composer */
+  .composer-wrap{
+    flex-shrink:0;padding:12px 24px 22px;background:#FAFAF8;
+    border-top:1px solid #ECE9E2;
+  }
+  .composer{
+    max-width:780px;margin:0 auto;
+    background:#FFFFFF;border:1px solid #DCD7CE;border-radius:14px;
+    padding:14px 16px 10px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02), 0 6px 20px -12px rgba(60,50,40,.12);
+  }
+  .composer textarea{
+    width:100%;border:none;outline:none;
+    font-family:inherit;font-size:14.5px;line-height:1.6;color:#1A1A1A;
+    background:transparent;resize:none;min-height:36px;max-height:120px;
+  }
+  .composer textarea::placeholder{color:#A8A39B}
+  .composer-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:6px;padding-top:8px;border-top:1px solid #F4F2EE;
+  }
+  .composer-foot .ctx-tag{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:3px 8px;border-radius:6px;
+    background:#FBF7EE;color:#7A6840;font-size:11.5px;
+  }
+  .composer-foot .ctx-tag .pin{width:4px;height:4px;border-radius:50%;background:#C9A76E}
+  .composer-foot .right{display:flex;gap:6px;align-items:center}
+  .icon-btn{
+    width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:#7A766F;
+  }
+  .icon-btn:hover{background:#F4F2EE;color:#1A1A1A}
+  .send-btn{
+    width:28px;height:28px;border-radius:7px;background:#1A1A1A;color:#FAFAF8;
+    display:grid;place-items:center;
+  }
+  .send-btn:hover{background:#000}
+
+  /* 演示提示气泡（首次进入提示） */
+  .hint{
+    position:fixed;left:50%;bottom:118px;transform:translateX(-50%);
+    background:rgba(26,26,26,.92);color:#FAFAF8;
+    padding:7px 14px;border-radius:999px;font-size:12px;
+    animation:fadeOut .4s ease-out 4s forwards;
+    pointer-events:none;
+  }
+  @keyframes fadeOut{to{opacity:0;visibility:hidden}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- 侧栏 -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo"><span class="dot">飞</span>飞象 AI</div>
+      <button class="sb-fold" title="收起侧栏">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7M19 19l-7-7 7-7"/></svg>
+      </button>
+    </div>
+
+    <a class="sb-item" href="../v22-home-options/N1-plus.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+      新对话
+    </a>
+    <div class="sb-item active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      高一(3)班议论文学情
+    </div>
+    <div class="sb-item muted" style="padding-left:31px">高一(5)班错因聚类</div>
+    <div class="sb-item muted" style="padding-left:31px">《我与地坛》课件初稿</div>
+    <div class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      历史对话
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">班级</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(3)班<span class="badge">48</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(5)班<span class="badge">52</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高二(1)班<span class="badge">46</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">资源</div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        知识库
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg>
+        最近任务
+      </div>
+    </div>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sb-foot">
+      <div class="sb-item" style="margin-bottom:4px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        教务
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar">张</div>
+        <div>
+          <div class="sb-uname">张老师</div>
+          <div class="sb-urole">高一语文 · 实验中学</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 主区 -->
+  <main class="main">
+
+    <!-- 顶部 context 条 -->
+    <div class="ctxbar">
+      <a class="ctx-back" href="../v22-home-options/N1-plus.html" title="返回新对话">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="ctx-pill">
+        <span class="pin"></span>
+        当前对话基于
+        <strong>高一(3)班 · 议论文《我的母亲》· 48 份</strong>
+        <span class="sep">·</span>
+        已批改 3 天前
+        <a class="open" href="#" onclick="alert('（演示）跳转到飞象作文 — 该批次的批改详情页');return false;">
+          查看原批次
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+      <div class="ctx-actions">
+        <button class="ctx-btn" onclick="alert('（演示）切换到其他批次/班级/学生')">更换上下文</button>
+        <button class="ctx-btn" onclick="alert('（演示）把这次对话固定到侧栏 / 加入待办')">收藏</button>
+      </div>
+    </div>
+
+    <!-- 对话流 -->
+    <div class="stream">
+      <div class="stream-inner">
+
+        <!-- 用户消息 1 -->
+        <div class="msg user">
+          <div class="msg-head">
+            <div class="msg-avatar user">张</div>
+            <div class="msg-name">张老师</div>
+            <div class="msg-time">刚刚</div>
+          </div>
+          <div class="msg-body">
+            <span class="selected-batch">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              高一(3)班 议论文《我的母亲》· 48 份
+            </span>
+            这一批整体怎么样？
+          </div>
+        </div>
+
+        <!-- AI 回复 1 -->
+        <div class="msg ai">
+          <div class="msg-head">
+            <div class="msg-avatar ai">飞</div>
+            <div class="msg-name">飞象 AI</div>
+            <div class="msg-time">刚刚 · 用时 1.4s</div>
+          </div>
+          <div class="msg-body">
+
+            <p>整体<b>中等偏上</b>。48 份已批完，平均 <b>33.4</b> / 50，比上一篇《那一次》高 <span class="em">+1.8</span>，说明<b>结构训练</b>有起色。但<b>立论扣题</b>是这一批的<b>主要短板</b>，有 7 位同学论点偏离"母爱的具体表现"这一核心，集中在审题阶段就走偏了。</p>
+
+            <!-- 学情快照卡 -->
+            <div class="snapshot">
+
+              <div class="snap-head">
+                <div class="snap-title">
+                  批次学情快照
+                  <span class="badge">议论文 · 我的母亲</span>
+                </div>
+                <div class="snap-meta">
+                  数据来自飞象作文 · 3 天前批改
+                  <a href="#" onclick="alert('（演示）跳到该批次的完整学情页');return false;">完整学情 ›</a>
+                </div>
+              </div>
+
+              <!-- 三个核心指标 -->
+              <div class="snap-metrics">
+                <div class="snap-metric">
+                  <div class="lbl">平均分</div>
+                  <div class="val">33.4 <span class="unit">/ 50</span></div>
+                  <div class="sub"><span class="up">↑ +1.8</span> vs 上篇《那一次》</div>
+                </div>
+                <div class="snap-metric">
+                  <div class="lbl">优秀 / 待提升</div>
+                  <div class="val">4 <span class="unit">优秀</span> · 7 <span class="unit">待提升</span></div>
+                  <div class="sub">优秀率 8.3% · 待提升率 14.6%</div>
+                </div>
+                <div class="snap-metric">
+                  <div class="lbl">完成与字数</div>
+                  <div class="val">48 <span class="unit">/ 48</span></div>
+                  <div class="sub">平均 612 字 · 3 篇低于 400 字</div>
+                </div>
+              </div>
+
+              <!-- 维度 + 学生分布 -->
+              <div class="snap-grid">
+                <div class="snap-col">
+                  <div class="snap-col-title">五维评分（满分 10）</div>
+                  <div class="dim-list">
+                    <div class="dim-row"><span class="dim-name">审题立意</span><span class="dim-bar low" style="--w:58%"></span><span class="dim-val">5.8</span></div>
+                    <div class="dim-row"><span class="dim-name">结构思路</span><span class="dim-bar high" style="--w:78%"></span><span class="dim-val">7.8</span></div>
+                    <div class="dim-row"><span class="dim-name">语言表达</span><span class="dim-bar mid" style="--w:71%"></span><span class="dim-val">7.1</span></div>
+                    <div class="dim-row"><span class="dim-name">选材内容</span><span class="dim-bar mid" style="--w:68%"></span><span class="dim-val">6.8</span></div>
+                    <div class="dim-row"><span class="dim-name">书写规范</span><span class="dim-bar high" style="--w:82%"></span><span class="dim-val">8.2</span></div>
+                  </div>
+                </div>
+                <div class="snap-col">
+                  <div class="snap-col-title">分数段分布</div>
+                  <div class="dist-rows">
+                    <div class="dist-row"><span class="seg" style="background:#7BA37D"></span><span class="lbl">42-50</span><span class="bar" style="--w:8%;--c:#7BA37D"></span><span class="num">4 人</span></div>
+                    <div class="dist-row"><span class="seg" style="background:#A8C2A6"></span><span class="lbl">36-41</span><span class="bar" style="--w:23%;--c:#A8C2A6"></span><span class="num">11 人</span></div>
+                    <div class="dist-row"><span class="seg" style="background:#C9A76E"></span><span class="lbl">30-35</span><span class="bar" style="--w:54%;--c:#C9A76E"></span><span class="num">26 人</span></div>
+                    <div class="dist-row"><span class="seg" style="background:#D69478"></span><span class="lbl">20-29</span><span class="bar" style="--w:14%;--c:#D69478"></span><span class="num">7 人</span></div>
+                    <div class="dist-row"><span class="seg" style="background:#B85A45"></span><span class="lbl">≤ 20</span><span class="bar" style="--w:0%"></span><span class="num">0 人</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 焦点学生 -->
+              <div class="snap-focus">
+                <div class="focus-title">
+                  <span>需要关注的几位</span>
+                  <a href="#" onclick="alert('（演示）展开全部 7 位待提升学生');return false;">全部 7 位 ›</a>
+                </div>
+                <div class="focus-list">
+                  <div class="focus-row">
+                    <span class="name">戴俊泽</span>
+                    <span class="score">26 分</span>
+                    <span class="tag warn">立论偏题</span>
+                    <span class="why">把"母亲的爱"写成"母亲的勤劳"，主旨被材料带偏</span>
+                    <a class="open" href="#" onclick="alert('（演示）打开戴俊泽的批改详情');return false;">查看 ›</a>
+                  </div>
+                  <div class="focus-row">
+                    <span class="name">高怡然</span>
+                    <span class="score">28 分</span>
+                    <span class="tag warn">论据单薄</span>
+                    <span class="why">仅 1 个事例支撑，且事例与论点关联弱</span>
+                    <a class="open" href="#" onclick="alert('（演示）打开高怡然的批改详情');return false;">查看 ›</a>
+                  </div>
+                  <div class="focus-row">
+                    <span class="name">蔡梓雨</span>
+                    <span class="score">46 分</span>
+                    <span class="tag good">范文候选</span>
+                    <span class="why">立意精准、细节真实，可作下节课范读</span>
+                    <a class="open" href="#" onclick="alert('（演示）打开蔡梓雨的优秀作文');return false;">查看 ›</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <p>建议下一步从<b>立论扣题</b>切入：先看 7 篇待提升的具体问题，再用蔡梓雨那篇做范读，最后让 AI 出一道<b>10 分钟课堂订正小练</b>。</p>
+
+            <!-- 推荐下一步 chip -->
+            <div class="next-block">
+              <div class="next-label">下一步</div>
+              <div class="next-chips">
+                <a class="next-chip primary" href="#" onclick="alert('（演示）跳到飞象作文 - 该批次的逐篇审改页');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+                  去逐篇审改这 48 份
+                </a>
+                <a class="next-chip" href="#" onclick="alert('（演示）展开 7 篇待提升的对照视图');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                  细看 7 篇待提升
+                </a>
+                <a class="next-chip" href="#" onclick="alert('（演示）展开 4 篇优秀作为范读候选');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  挑 4 篇优秀范读
+                </a>
+                <a class="next-chip" href="#" onclick="alert('（演示）让 AI 起草一道立论扣题的 10 分钟课堂练');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg>
+                  出一道课堂订正小练
+                </a>
+                <a class="next-chip" href="#" onclick="alert('（演示）让 AI 起草一段班级讲评，可粘到家长群');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  起草一段班级讲评
+                </a>
+                <a class="next-chip" href="#" onclick="alert('（演示）跳到飞象作文 - 报告下载配置页');return false;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  配置下载学情报告
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 追问 composer -->
+    <div class="composer-wrap">
+      <div class="composer">
+        <textarea id="followInput" placeholder="继续追问，比如：戴俊泽这种偏题问题，怎么在课堂上 5 分钟讲透？"></textarea>
+        <div class="composer-foot">
+          <span class="ctx-tag">
+            <span class="pin"></span>追问范围：当前批次（48 份）
+          </span>
+          <div class="right">
+            <button class="icon-btn" title="附件"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+            <button class="send-btn" id="followSend"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="hint">演示页 · 仅展示首条 AI 回复，可继续追问</div>
+
+<script>
+  /* 演示：追问发送 → 假装思考一下 + 弹个提示，不真渲染新消息（保持 demo 简洁） */
+  document.getElementById('followSend').addEventListener('click', () => {
+    const input = document.getElementById('followInput');
+    const v = input.value.trim();
+    if(!v){ input.focus(); return; }
+    alert('（演示）AI 会基于当前批次（48 份）回答：「' + v + '」\n\n下一版会接入真实流式回答与卡片渲染。');
+    input.value = '';
+  });
+
+  /* 从首页跳转过来时的 query：?q=xxx → 自动填到第一条用户消息（增强联动感） */
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  if(q){
+    const userBody = document.querySelector('.msg.user .msg-body');
+    /* 保留 selected-batch 标签，替换后面的文案 */
+    const batch = userBody.querySelector('.selected-batch');
+    userBody.innerHTML = '';
+    userBody.appendChild(batch);
+    userBody.appendChild(document.createTextNode(' ' + q));
+  }
+</script>
+
+</body>
+</html>

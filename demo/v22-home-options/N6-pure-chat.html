@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>N6 · 纯对话 / 实体全收侧栏（对照组）</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Source Han Sans SC","Helvetica Neue",sans-serif;
+    background:#FFFFFF;color:#1A1A1A;font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  .layout{display:flex;height:100vh;overflow:hidden}
+
+  /* 侧栏 - 跟 N5 同款 Notion 风（保持共同骨架的"实体入口在侧栏"部分） */
+  .sidebar{
+    width:236px;flex-shrink:0;background:#F7F7F5;border-right:1px solid #ECECEA;
+    display:flex;flex-direction:column;padding:14px 8px;
+  }
+  .sb-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 18px}
+  .sb-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+  .sb-logo .dot{width:18px;height:18px;border-radius:5px;background:#1A1A1A;display:grid;place-items:center;color:#FFF;font-size:11px;font-weight:600}
+  .sb-fold{width:26px;height:26px;border-radius:5px;display:grid;place-items:center;color:#9A9A98;opacity:.6}
+  .sb-fold:hover{background:#EDEDEB;opacity:1}
+  .sb-section{margin-top:6px}
+  .sb-section-title{font-size:11px;color:#A8A8A6;padding:10px 8px 4px;letter-spacing:.05em;font-weight:500;text-transform:uppercase}
+  .sb-item{display:flex;align-items:center;gap:9px;padding:5px 8px;border-radius:5px;color:#3F3F46;font-size:13.5px;cursor:pointer}
+  .sb-item:hover{background:#EDEDEB}
+  .sb-item.active{background:#E4E4E1;color:#1A1A1A;font-weight:500}
+  .sb-item svg{flex-shrink:0;color:#9A9A98}
+  .sb-item.active svg{color:#1A1A1A}
+  .sb-item .badge{margin-left:auto;font-size:11px;color:#A8A8A6}
+  .sb-spacer{flex:1}
+  .sb-foot{padding:6px 8px;border-top:1px solid #ECECEA;margin-top:8px}
+  .sb-user{display:flex;align-items:center;gap:9px;padding:4px}
+  .sb-avatar{width:26px;height:26px;border-radius:50%;background:#D6D6D2;display:grid;place-items:center;font-size:12px;font-weight:600;color:#5A5A57}
+  .sb-uname{font-size:13px}
+  .sb-urole{font-size:11px;color:#A8A8A6;margin-top:1px}
+
+  /* ============ 主舞台：极致留白 + 居中 ============ */
+  .main{
+    flex:1;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:40px 64px;background:#FFFFFF;min-width:0;overflow-y:auto;
+  }
+  .stage{width:100%;max-width:680px}
+
+  .hero{text-align:center;margin-bottom:36px}
+  .hero h1{
+    font-size:34px;font-weight:400;color:#1A1A1A;line-height:1.3;
+    letter-spacing:-.01em;
+    font-family:Georgia,"Source Han Serif SC",serif;
+  }
+  .hero .sub{font-size:13px;color:#9A9A98;margin-top:10px;letter-spacing:.04em}
+
+  /* composer - 大、空、居中 */
+  .composer{
+    background:#FFFFFF;border:1px solid #E4E4E1;border-radius:18px;
+    padding:18px 18px 12px;
+    box-shadow:0 4px 18px -8px rgba(24,24,27,.08), 0 1px 2px rgba(24,24,27,.04);
+  }
+  .composer textarea{
+    width:100%;border:none;outline:none;font-family:inherit;
+    font-size:16px;line-height:1.6;color:#1A1A1A;background:transparent;resize:none;min-height:54px;
+  }
+  .composer textarea::placeholder{color:#A8A8A6}
+  .composer-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+  .fc-chips{display:flex;gap:1px;align-items:center}
+  .icon-chip{
+    width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:#71717A;
+    position:relative;
+  }
+  .icon-chip:hover{background:#F4F4F2;color:#1A1A1A}
+  .icon-chip[data-tip]:hover::after{
+    content:attr(data-tip);
+    position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+    background:#1A1A1A;color:#FFF;font-size:11px;padding:3px 7px;border-radius:4px;white-space:nowrap;
+  }
+  .fc-divider{width:1px;height:14px;background:#E4E4E1;margin:0 4px}
+  .send-btn{width:30px;height:30px;border-radius:7px;background:#1A1A1A;color:#FFF;display:grid;place-items:center}
+  .send-btn:hover{background:#000}
+
+  /* 飞象建议 pill - 居中、轻、无标题 */
+  .suggest{margin-top:22px;display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 12px;border-radius:999px;
+    background:#F4F4F2;border:1px solid transparent;
+    color:#3F3F46;font-size:12.5px;cursor:pointer;
+  }
+  .pill:hover{background:#EDEDEB;border-color:#E4E4E1;color:#1A1A1A}
+  .pill svg{color:#9A9A98}
+
+  /* 底部一行小字 - 提示侧栏有实体入口（避免老师以为啥也没有） */
+  .helper{
+    text-align:center;margin-top:32px;
+    font-size:11.5px;color:#A8A8A6;letter-spacing:.04em;
+  }
+  .helper kbd{
+    background:#F4F4F2;border:1px solid #E4E4E1;border-radius:4px;
+    padding:1px 5px;font-size:10.5px;font-family:inherit;color:#71717A;
+  }
+
+  .demo-tag{position:fixed;bottom:14px;right:14px;background:#1A1A1A;color:#FFF;font-size:11px;padding:5px 10px;border-radius:5px;letter-spacing:.04em;opacity:.75;z-index:10}
+  .demo-warn{
+    position:fixed;bottom:14px;left:14px;
+    background:#FBF1EF;color:#7A3A2A;border:1px solid #F0D8D2;
+    font-size:11px;padding:5px 10px;border-radius:5px;letter-spacing:.02em;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- 侧栏：所有实体入口都在这里 -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo"><span class="dot">飞</span>飞象 AI</div>
+      <button class="sb-fold"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7M19 19l-7-7 7-7"/></svg></button>
+    </div>
+
+    <div class="sb-item active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>新对话</div>
+    <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>历史对话</div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">班级</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(3)班<span class="badge">48</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(5)班<span class="badge">52</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高二(1)班<span class="badge">46</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">资源</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>知识库</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg>最近任务<span class="badge">12</span></div>
+    </div>
+
+    <div class="sb-spacer"></div>
+    <div class="sb-foot">
+      <div class="sb-item" style="margin-bottom:4px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>教务</div>
+      <div class="sb-user">
+        <div class="sb-avatar">张</div>
+        <div><div class="sb-uname">张老师</div><div class="sb-urole">高一语文 · 实验中学</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 主舞台：只有 hero + composer + 飞象建议 -->
+  <main class="main">
+    <div class="stage">
+
+      <div class="hero">
+        <h1>下午好，张老师</h1>
+        <div class="sub">想做点什么？</div>
+      </div>
+
+      <div class="composer">
+        <textarea placeholder="比如：把昨天扫的高一(3)班作文按错因分类整理一下"></textarea>
+        <div class="composer-foot">
+          <div class="fc-chips">
+            <button class="icon-chip" data-tip="附件"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+            <span class="fc-divider"></span>
+            <button class="icon-chip" data-tip="作文批改"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></button>
+            <button class="icon-chip" data-tip="AI 组题"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg></button>
+            <button class="icon-chip" data-tip="错因分析"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></button>
+            <button class="icon-chip" data-tip="教学课件"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+            <button class="icon-chip" data-tip="知识库范围"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></button>
+          </div>
+          <button class="send-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <!-- 飞象建议 pill - 仅 3-4 条，居中 -->
+      <div class="suggest">
+        <button class="pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>高一(3)班昨天扫的 48 份作文还没分析</button>
+        <button class="pill">高一(5)班议论文有 7 个学生立论偏题</button>
+        <button class="pill">为下周《我与地坛》设计 3 道思辨型题</button>
+      </div>
+
+      <!-- 极轻提示，告诉老师"班级 / 知识库 / 任务"在侧栏 -->
+      <div class="helper">
+        班级、知识库、最近任务都在左侧 ←
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="demo-warn">对照组 · 违反 v8.3.1 §3.6 (首页无实体卡)</div>
+<div class="demo-tag">N6 · 纯对话 / 实体全收侧栏</div>
+</body>
+</html>

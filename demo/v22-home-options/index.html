@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>v22 · 首页 5 套对比 · N1-N5</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Source Han Sans SC",sans-serif;
+    background:#F4F2EE;color:#1A1A1A;font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1280px;margin:0 auto;padding:48px 32px 80px}
+
+  /* ============ 头部 ============ */
+  .head{margin-bottom:32px}
+  .breadcrumb{font-size:12px;color:#9A968F;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+  h1{font-size:28px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+  .head .sub{font-size:14px;color:#5A5550;max-width:780px;line-height:1.7}
+
+  /* ============ 共同骨架说明 ============ */
+  .common{
+    margin-top:24px;background:#FFFDF8;border:1px solid #ECE5D5;border-radius:10px;
+    padding:18px 22px;
+  }
+  .common-title{font-size:11.5px;color:#A89A78;letter-spacing:.06em;font-weight:500;margin-bottom:10px;text-transform:uppercase}
+  .common-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .common-item{font-size:12.5px;color:#3D352B}
+  .common-item b{display:block;font-size:13px;color:#1A1A1A;margin-bottom:2px;font-weight:600}
+
+  /* ============ 矩阵表 ============ */
+  .matrix{
+    margin-top:20px;background:#FFFFFF;border:1px solid #E8E5E0;border-radius:10px;
+    overflow:hidden;
+  }
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid #F0EDE7}
+  th{background:#F8F6F1;font-size:11.5px;color:#9A968F;letter-spacing:.04em;font-weight:500;text-transform:uppercase}
+  td:first-child,th:first-child{padding-left:18px;width:64px;font-weight:600;color:#1A1A1A}
+  td:last-child,th:last-child{padding-right:18px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11.5px;background:#F4F2EE;color:#5A5550}
+  .tag.rich{background:#EFF5F0;color:#274834}
+  .tag.light{background:#FBF7EE;color:#5A4F38}
+
+  /* ============ demo 网格 ============ */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:32px}
+  .card{
+    background:#FFFFFF;border:1px solid #E8E5E0;border-radius:14px;
+    overflow:hidden;display:flex;flex-direction:column;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .card:hover{border-color:#C9C3BA;box-shadow:0 8px 24px -12px rgba(60,50,40,.12)}
+  .card-head{
+    padding:14px 18px;border-bottom:1px solid #F0EDE7;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .card-name{font-size:14px;font-weight:600;color:#1A1A1A}
+  .card-name .num{
+    display:inline-grid;place-items:center;width:22px;height:22px;
+    border-radius:5px;background:#1A1A1A;color:#FAFAF8;font-size:11px;font-weight:600;
+    margin-right:8px;vertical-align:-4px;
+  }
+  .card-tags{display:flex;gap:5px}
+  .card-tags .t{font-size:11px;padding:2px 6px;border-radius:4px;background:#F4F2EE;color:#5A5550}
+  .preview{position:relative;background:#FAFAF8;height:520px;overflow:hidden}
+  .preview iframe{
+    position:absolute;top:0;left:0;
+    width:200%;height:200%;
+    border:none;
+    transform:scale(0.5);transform-origin:0 0;
+    pointer-events:none;
+  }
+  .preview-cover{
+    position:absolute;inset:0;cursor:pointer;
+  }
+  .card-body{padding:14px 18px 16px;flex:1;display:flex;flex-direction:column;gap:10px}
+  .traits{display:flex;flex-wrap:wrap;gap:5px}
+  .trait{font-size:11.5px;padding:2px 7px;border-radius:4px;background:#F4F2EE;color:#5A5550}
+  .summary{font-size:12.5px;color:#5A5550;line-height:1.6}
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;margin-top:4px}
+  .pc-block{padding:8px 10px;border-radius:6px}
+  .pc-block.pro{background:#F0F6F1;color:#274834}
+  .pc-block.con{background:#FBF1EF;color:#7A3A2A}
+  .pc-block b{display:block;font-size:10.5px;letter-spacing:.06em;font-weight:600;margin-bottom:3px;text-transform:uppercase;opacity:.8}
+  .open-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:5px;
+    padding:8px 12px;border-radius:6px;font-size:12.5px;font-weight:500;
+    background:#1A1A1A;color:#FAFAF8;text-align:center;
+    margin-top:4px;
+  }
+  .open-btn:hover{background:#000}
+
+  /* ============ 决策提示 ============ */
+  .decide{
+    margin-top:40px;background:#FBF7EE;border:1px solid #ECE4D2;border-radius:10px;
+    padding:18px 22px;
+  }
+  .decide h2{font-size:14px;font-weight:600;color:#5A4F38;letter-spacing:.02em;margin-bottom:10px}
+  .decide ul{list-style:none;font-size:13px;color:#3D352B;line-height:1.8}
+  .decide li::before{content:"› ";color:#A89A78;font-weight:500}
+
+  .footer{margin-top:32px;font-size:11.5px;color:#9A968F;text-align:center;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="breadcrumb">v22 · 首页对比 · 2026-04-23</div>
+    <h1>首页 5 套 + 1 推荐稿 + 1 对照组 · N1+ / N1-N6</h1>
+    <div class="sub">
+      N1-N5 锁定 v8.3.1 §3.6 不动：全局窄侧边栏（Notion 风可折叠） + 主舞台纵向 stack（composer + 飞象建议 + 班级 / 知识库 / 任务 实体卡）。三个维度拉开差异：<b>内容密度</b>（简洁 / 丰富）、<b>composer 位置</b>（上 / 下）、<b>chip 形态</b>（外 / 内）。<br>
+      <b style="color:#5A4F38">N1+ 是推荐稿</b> —— 在 N1 基础上落实 4 条必做（composer 视觉权重 / 章节层级感 / 留白节奏 / 上下文 bar），外加 4 条加分（chip 与 pill 形态分家 / 知识库左 border 区分所有权 / 任务进度条 / pill 点击填入 composer）。<br>
+      <b style="color:#7A3A2A">N6 是对照组</b> —— 主动违反 §3.6，把所有实体收进侧栏，主舞台只剩 composer + 飞象建议。
+    </div>
+  </div>
+
+  <!-- 共同骨架 -->
+  <div class="common">
+    <div class="common-title">5 套共同骨架</div>
+    <div class="common-grid">
+      <div class="common-item"><b>侧栏</b>窄宽 Notion 风，可折叠。固定入口：班级 N 个 / 知识库 / 最近任务 / 历史 / 教务。</div>
+      <div class="common-item"><b>主舞台</b>composer + 飞象建议 + 班级 / 知识库 / 任务 三块章节，纵向 stack。</div>
+      <div class="common-item"><b>章节感（a）</b>每块带标题 + 右上"查看全部 →"，参考 v19 的层次组织。</div>
+      <div class="common-item"><b>飞象建议（d）</b>pill 弹幕风，松弛轻盈，被动呈现，不强引导。</div>
+    </div>
+  </div>
+
+  <!-- 矩阵 -->
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>内容密度</th>
+          <th>Composer</th>
+          <th>Chip 形态</th>
+          <th>调性参考</th>
+          <th>定位</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#FBF7EE"><td style="color:#5A4F38">N1+<br><span style="font-size:10px;font-weight:500;color:#A89A78">推荐</span></td><td><span class="tag rich">丰富</span></td><td>上</td><td>外（工具感 chip）</td><td>N1 升级</td><td>composer 主导 · 章节层级清晰 · 上下文 bar · 进度条</td></tr>
+        <tr><td>N1</td><td><span class="tag rich">丰富</span></td><td>上</td><td>外（mode 横排）</td><td>GPT / v19 升级</td><td>稳健主流，章节卡片化</td></tr>
+        <tr><td>N2</td><td><span class="tag rich">丰富</span></td><td>上</td><td>内（composer 内底栏）</td><td>豆包</td><td>圆润年轻，集成度高</td></tr>
+        <tr><td>N3</td><td><span class="tag light">简洁</span></td><td>上</td><td>内（文本按钮弱化）</td><td>Claude</td><td>克制衬线，章节走列表流</td></tr>
+        <tr><td>N4</td><td><span class="tag rich">丰富</span></td><td>下（贴底）</td><td>外（composer 上方）</td><td>Cursor</td><td>IDE 工程感，行动栏明确</td></tr>
+        <tr><td>N5</td><td><span class="tag light">简洁</span></td><td>下（浮动）</td><td>内（图标按钮）</td><td>Notion AI</td><td>极简浮岛，永远可输入</td></tr>
+        <tr style="background:#FBF7F4"><td style="color:#7A3A2A">N6<br><span style="font-size:10px;font-weight:500;color:#A56B5A">对照组</span></td><td><span class="tag light" style="background:#FBF1EF;color:#7A3A2A">极简</span></td><td>上（居中）</td><td>内（图标按钮）</td><td>ChatGPT 新对话</td><td>纯对话页 / 实体全收侧栏（违反 §3.6）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- demo 网格 -->
+  <div class="grid">
+
+    <!-- N1+ 推荐稿 -->
+    <a class="card" href="N1-plus.html" target="_blank" style="border-color:#ECE4D2;background:#FBF7EE;grid-column:span 2">
+      <div class="card-head" style="border-bottom-color:#ECE4D2;background:#FBF7EE">
+        <div class="card-name">
+          <span class="num" style="background:#5A4F38">★</span>N1+ · 推荐稿
+          <span style="font-size:10.5px;font-weight:500;color:#A89A78;margin-left:6px;letter-spacing:.04em">· 必做 4 条 + 加分 4 条已落地</span>
+        </div>
+        <div class="card-tags">
+          <span class="t" style="background:#FFFFFF;color:#5A4F38">composer 主导</span>
+          <span class="t" style="background:#FFFFFF;color:#5A4F38">章节层级</span>
+          <span class="t" style="background:#FFFFFF;color:#5A4F38">上下文 bar</span>
+          <span class="t" style="background:#FFFFFF;color:#5A4F38">进度反馈</span>
+        </div>
+      </div>
+      <div class="preview" style="height:640px;background:#FAFAF8">
+        <iframe src="N1-plus.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">composer min-h 90 / 字号 17 / 圆角 18 / 阴影加重</span>
+          <span class="trait">章节标题 15.5 + 副标题（"3 个班 · 146 名学生"）</span>
+          <span class="trait">输入区紧凑 · 实体区拉开 64px</span>
+          <span class="trait">hero 下增上下文 bar（飞象的护城河可见）</span>
+          <span class="trait">mode chip = 工具感方圆角 · suggest pill = 弹幕胶囊</span>
+          <span class="trait">飞象建议 pill 移入 composer · hover 显示"↗ 填入"</span>
+          <span class="trait">知识库三张卡左 border 区分（你的 / 学校 / 平台）</span>
+          <span class="trait">任务"分析中"加进度条 + 跳动点</span>
+        </div>
+        <div class="summary"><b>这是 N1 + 必做 4 条 + 加分 4 条的合体版本。</b>composer 视觉权重明显主导，章节感清晰可读，hero 下方"飞象正在为你 [3 个班] [3 个知识库]"是飞象 ≠ 通用 AI 的即时证据。飞象建议从外置一区移入 composer 内底部 —— 因为它的语义就是"会被填入对话框"，物理位置贴近意图更顺。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>跟 N1 对比信息密度更高但视觉更安静；"输入 vs 实体"分层最清晰；hover 提示明确"AI 建议会被填入而非直接发送"，赋能不替代落到了 UI 上。</div>
+          <div class="pc-block con"><b>需进一步打磨</b>chip 数量上限 / 班级超过 3 个的展示 / composer 焦点态 / 空状态。这些是下一轮的事。</div>
+        </div>
+        <span class="open-btn" style="background:#5A4F38">打开 N1+ 推荐稿 →</span>
+      </div>
+    </a>
+
+    <!-- N1 -->
+    <a class="card" href="N1-rich-top-chip-out.html" target="_blank">
+      <div class="card-head">
+        <div class="card-name"><span class="num">1</span>丰富 / 上 / chip 外</div>
+        <div class="card-tags"><span class="t">GPT 风</span><span class="t">章节卡</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N1-rich-top-chip-out.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">composer 在上</span>
+          <span class="trait">mode chip 外置横排</span>
+          <span class="trait">飞象建议 pill</span>
+          <span class="trait">3 块章节卡 (3 列网格)</span>
+          <span class="trait">章节感强</span>
+        </div>
+        <div class="summary">最稳健的"主流 AI 产品"形态，章节标题感清晰，三栏卡片网格信息密度高，chip 外置便于一眼看到能力全集。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>层次最分明，新老师易上手，AI 感与编辑感平衡。</div>
+          <div class="pc-block con"><b>风险</b>chip 外置占视觉，容易被误读为"工具卡列表"。</div>
+        </div>
+        <span class="open-btn">打开 N1 →</span>
+      </div>
+    </a>
+
+    <!-- N2 -->
+    <a class="card" href="N2-rich-top-chip-in.html" target="_blank">
+      <div class="card-head">
+        <div class="card-name"><span class="num">2</span>丰富 / 上 / chip 内</div>
+        <div class="card-tags"><span class="t">豆包风</span><span class="t">集成度高</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N2-rich-top-chip-in.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">composer 在上</span>
+          <span class="trait">chip 内置底栏</span>
+          <span class="trait">圆角 18px / 蓝灰</span>
+          <span class="trait">章节卡更柔</span>
+          <span class="trait">悬浮阴影</span>
+        </div>
+        <div class="summary">composer 内部集成 chip，模仿豆包的"输入框即工作台"。视觉更圆润年轻，重心都在 composer 上。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>对话主导感最强，能力切换不打断输入流。</div>
+          <div class="pc-block con"><b>风险</b>chip 拥挤在 composer 内，5 个能力以上易乱。</div>
+        </div>
+        <span class="open-btn">打开 N2 →</span>
+      </div>
+    </a>
+
+    <!-- N3 -->
+    <a class="card" href="N3-light-top-chip-in.html" target="_blank">
+      <div class="card-head">
+        <div class="card-name"><span class="num">3</span>简洁 / 上 / chip 内</div>
+        <div class="card-tags"><span class="t">Claude 风</span><span class="t">列表流</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N3-light-top-chip-in.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">居中 hero / 衬线</span>
+          <span class="trait">奶油白 + 红棕</span>
+          <span class="trait">chip 文本按钮</span>
+          <span class="trait">章节走列表流</span>
+          <span class="trait">每章 3-5 行精简</span>
+        </div>
+        <div class="summary">克制风格，主舞台不上卡片网格，每章节用一组精简列表行（图标 + 名称 + 元信息 + 操作链）。最接近"教师写作工具"的气质。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>视觉留白最舒服，可承载未来更多章节，不挤。</div>
+          <div class="pc-block con"><b>风险</b>"AI 感"较弱，可能被觉得不够现代。</div>
+        </div>
+        <span class="open-btn">打开 N3 →</span>
+      </div>
+    </a>
+
+    <!-- N4 -->
+    <a class="card" href="N4-rich-bottom-chip-out.html" target="_blank">
+      <div class="card-head">
+        <div class="card-name"><span class="num">4</span>丰富 / 下 / chip 外</div>
+        <div class="card-tags"><span class="t">Cursor 风</span><span class="t">底栏 IDE</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N4-rich-bottom-chip-out.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">composer 贴底固定</span>
+          <span class="trait">mode chip 在 composer 上方</span>
+          <span class="trait">主舞台滚动 = 章节卡</span>
+          <span class="trait">深绿强调</span>
+          <span class="trait">行动栏明确</span>
+        </div>
+        <div class="summary">把"输入"沉到底部当行动栏，主舞台让位给"看到的内容"。老师滚动浏览班级 / 知识库 / 任务时，composer 永远在视线里。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>看与做不冲突，长列表时 composer 不会消失。</div>
+          <div class="pc-block con"><b>风险</b>底栏占垂直空间，章节卡视觉分量被压。</div>
+        </div>
+        <span class="open-btn">打开 N4 →</span>
+      </div>
+    </a>
+
+    <!-- N5 -->
+    <a class="card" href="N5-light-bottom-chip-in.html" target="_blank">
+      <div class="card-head">
+        <div class="card-name"><span class="num">5</span>简洁 / 下 / chip 内</div>
+        <div class="card-tags"><span class="t">Notion AI 风</span><span class="t">浮岛 composer</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N5-light-bottom-chip-in.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">浮动胶囊 composer</span>
+          <span class="trait">chip 图标按钮 (内)</span>
+          <span class="trait">几乎纯白</span>
+          <span class="trait">章节列表流</span>
+          <span class="trait">最克制</span>
+        </div>
+        <div class="summary">composer 是浮在底部的胶囊，不占整栏；hover 才显示 chip 名称。主舞台是文档式列表。极致克制 + 永远可输入。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>体感最轻，对工具能力暴露最弱（避免被当成工具集）。</div>
+          <div class="pc-block con"><b>风险</b>能力发现性差，新老师不知道有什么 chip。</div>
+        </div>
+        <span class="open-btn">打开 N5 →</span>
+      </div>
+    </a>
+
+    <!-- N6 - 对照组 -->
+    <a class="card" href="N6-pure-chat.html" target="_blank" style="border-color:#F0D8D2;background:#FFFCFA">
+      <div class="card-head" style="border-bottom-color:#F4E5DF">
+        <div class="card-name">
+          <span class="num" style="background:#7A3A2A">6</span>纯对话 / 实体全收侧栏
+          <span style="font-size:10.5px;font-weight:500;color:#A56B5A;margin-left:6px;letter-spacing:.04em">· 对照组</span>
+        </div>
+        <div class="card-tags"><span class="t" style="background:#FBF1EF;color:#7A3A2A">违反 §3.6</span></div>
+      </div>
+      <div class="preview">
+        <iframe src="N6-pure-chat.html" scrolling="no"></iframe>
+        <div class="preview-cover"></div>
+      </div>
+      <div class="card-body">
+        <div class="traits">
+          <span class="trait">主舞台仅 composer + pill</span>
+          <span class="trait">实体全部收侧栏</span>
+          <span class="trait">居中衬线 hero</span>
+          <span class="trait">chip 图标内置</span>
+          <span class="trait">极致留白</span>
+        </div>
+        <div class="summary">主动违反 v8.3.1 §3.6 的对照组：去掉首页所有实体卡，只留侧栏入口 + 一句"班级、知识库、任务都在左侧 ←"。最像 ChatGPT / Claude 新对话页。</div>
+        <div class="pros-cons">
+          <div class="pc-block pro"><b>优势</b>体感最纯粹的"AI 工作台"，输入即一切，老司机最快。</div>
+          <div class="pc-block con"><b>风险</b>首页失去"班级 / 任务"差异化抓手，跟通用 AI 长一样。</div>
+        </div>
+        <span class="open-btn" style="background:#7A3A2A">打开 N6 →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- 决策提示 -->
+  <div class="decide">
+    <h2>怎么选 / 接下来要拍板的决策</h2>
+    <ul>
+      <li>composer 位置（上 vs 下）：决定老师"先看还是先做"。N1-N3 偏先做（hero + composer 在顶），N4-N5 偏先看（章节滚动 + 行动栏在底）。</li>
+      <li>内容密度（丰富 vs 简洁）：决定首页是"工作台"还是"日报式入口"。N1/N2/N4 是工作台（3 列章节卡），N3/N5 是日报（章节列表流）。</li>
+      <li>chip 形态（外 vs 内）：决定能力"显性 vs 隐性"。外置 = 老师可一眼看到全集（N1/N4），内置 = 让位给 composer 文字（N2/N3/N5）。</li>
+      <li>调性偏好：是要"主流稳健"（N1/N2）还是"克制专业"（N3/N5）还是"工程行动栏"（N4）。</li>
+      <li><b style="color:#7A3A2A">N6 对照题</b>：看完 N6 再看 N1-N5，问自己 —— 首页放班级 / 知识库 / 任务卡，是否真的比"纯对话页 + 侧栏入口"更值得？如果 N6 体感更舒服，§3.6 可能要松动；如果觉得 N6 像通用 AI 没差异化，那 §3.6 就该钉死。</li>
+    </ul>
+  </div>
+
+  <div class="footer">demo · v22 · 共同骨架遵守 v8.3.1 §3.6 · 飞象 AI</div>
+
+</div>
+</body>
+</html>

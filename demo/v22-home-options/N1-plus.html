@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>N1+ · 推荐稿（必做 4 条已落地）</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Source Han Sans SC","Helvetica Neue",sans-serif;
+    background:#FAFAF8;color:#1A1A1A;font-size:14px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  .layout{display:flex;height:100vh;overflow:hidden}
+
+  /* ============ 侧边栏（同 N1） ============ */
+  .sidebar{
+    width:240px;flex-shrink:0;background:#F4F2EE;border-right:1px solid #E8E5E0;
+    display:flex;flex-direction:column;padding:14px 10px;
+  }
+  .sb-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 16px}
+  .sb-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;letter-spacing:.02em}
+  .sb-logo .dot{width:18px;height:18px;border-radius:5px;background:#1A1A1A;display:grid;place-items:center;color:#FAFAF8;font-size:11px;font-weight:600}
+  .sb-fold{width:26px;height:26px;border-radius:5px;display:grid;place-items:center;color:#888;opacity:.6}
+  .sb-fold:hover{background:#EDEAE5;opacity:1}
+  .sb-section{margin-top:6px}
+  .sb-section-title{font-size:11px;color:#9A968F;padding:10px 8px 4px;letter-spacing:.05em;font-weight:500;text-transform:uppercase}
+  .sb-item{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;color:#3A3A3A;font-size:13.5px;cursor:pointer}
+  .sb-item:hover{background:#EDEAE5}
+  .sb-item.active{background:#E5E1DB;color:#1A1A1A;font-weight:500}
+  .sb-item svg{flex-shrink:0;color:#7A766F}
+  .sb-item.active svg{color:#1A1A1A}
+  .sb-item .badge{margin-left:auto;font-size:11px;color:#9A968F}
+  .sb-spacer{flex:1}
+  .sb-foot{padding:8px;border-top:1px solid #E8E5E0;margin-top:8px}
+  .sb-user{display:flex;align-items:center;gap:9px;padding:4px}
+  .sb-avatar{width:26px;height:26px;border-radius:50%;background:#D9D4CC;display:grid;place-items:center;font-size:12px;font-weight:600;color:#5A5550}
+  .sb-uname{font-size:13px}
+  .sb-urole{font-size:11px;color:#9A968F;margin-top:1px}
+
+  /* ============ 主舞台 ============ */
+  .main{flex:1;overflow-y:auto;padding:56px 64px 80px}
+  .stage{max-width:780px;margin:0 auto}
+
+  .hero{margin-bottom:28px}
+  .hero h1{font-size:28px;font-weight:500;letter-spacing:-.01em;color:#1A1A1A;line-height:1.3}
+
+  /* ============ 改进 ① composer 视觉权重放大 ============ */
+  .composer{
+    background:#FFFFFF;
+    border:1px solid #DCD7CE;
+    border-radius:18px;
+    padding:22px 22px 14px;
+    box-shadow:
+      0 1px 0 rgba(0,0,0,.02),
+      0 2px 8px -2px rgba(60,50,40,.05),
+      0 16px 40px -20px rgba(60,50,40,.18);
+  }
+  .composer textarea{
+    width:100%;border:none;outline:none;
+    font-family:inherit;font-size:17px;line-height:1.6;color:#1A1A1A;
+    background:transparent;resize:none;
+    min-height:90px;
+  }
+  .composer textarea::placeholder{color:#A8A39B}
+  .composer-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #F4F2EE}
+  .composer-foot .left{display:flex;gap:4px;align-items:center}
+  .icon-btn{
+    width:32px;height:32px;border-radius:8px;
+    display:grid;place-items:center;color:#7A766F;
+  }
+  .icon-btn:hover{background:#F4F2EE;color:#1A1A1A}
+  .send-btn{
+    width:32px;height:32px;border-radius:8px;background:#1A1A1A;color:#FAFAF8;
+    display:grid;place-items:center;
+  }
+  .send-btn:hover{background:#000}
+
+  /* ============ 改进 ④ mode chip 形态变"工具感" ============ */
+  /* mode chip：浅灰底、半圆角矩形 + 小图标 → 工具按钮 */
+  .modes{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .mode-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:6px 11px;border-radius:8px;
+    font-size:12.5px;color:#3A3A3A;
+    background:#F4F2EE;border:1px solid transparent;
+  }
+  .mode-chip:hover{background:#EDEAE5;border-color:#DCD7CE}
+  .mode-chip svg{color:#7A766F}
+  .mode-chip.more{color:#7A766F}
+
+  /* ============ 飞象建议 → 框下耳语式（与 composer 同色 + 小三角指向 composer） ============ */
+  @keyframes breathe{0%,100%{opacity:.6}50%{opacity:1}}
+
+  .sug-block{
+    position:relative;
+    margin:8px 4px 0;
+    padding:11px 16px 13px;
+    background:#FBF7EE;
+    border:1px solid #F0E8D2;
+    border-radius:14px;
+  }
+  /* 指向 composer 的小三角（旋转方块） */
+  .sug-block::before{
+    content:"";position:absolute;
+    top:-5px;left:32px;width:9px;height:9px;
+    background:#FBF7EE;
+    border-left:1px solid #F0E8D2;
+    border-top:1px solid #F0E8D2;
+    transform:rotate(45deg);
+  }
+  .sug-block-bar{
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:9px;
+  }
+  .sug-block-bar .dot{
+    width:5px;height:5px;border-radius:50%;background:#C9A76E;
+    animation:breathe 3s ease-in-out infinite;
+  }
+  .sug-block-label{
+    font-size:11.5px;color:#A89A78;letter-spacing:.06em;font-weight:500;
+  }
+  .sug-block-meta{
+    font-size:11px;color:#B89A66;font-weight:400;
+    padding-left:8px;margin-left:2px;
+    border-left:1px solid #E8DCB8;
+  }
+  .sug-block-close{
+    margin-left:auto;width:20px;height:20px;border-radius:5px;
+    color:#A89A78;font-size:13px;line-height:1;display:grid;place-items:center;
+  }
+  .sug-block-close:hover{background:#F0E5CC;color:#7A6F55}
+  .sug-block .pill-row{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 13px;border-radius:999px;
+    background:#FFFFFF;border:1px solid #F0E8D2;
+    color:#5A4F38;font-size:13px;cursor:text;
+    position:relative;transition:all .15s;
+  }
+  .pill:hover{background:#FFFCF5;border-color:#E5D5A8;color:#3A3025;padding-right:24px}
+  .pill::after{
+    content:"↗ 填入";position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    font-size:10.5px;color:#A89A78;opacity:0;transition:opacity .15s;
+  }
+  .pill:hover::after{opacity:1}
+  .pill svg{color:#B89A66;opacity:.8}
+
+  /* chip 选中时，建议区让位（折叠收起） */
+  body.chip-locked .sug-block{
+    opacity:0;transform:translateY(-4px);
+    max-height:0;margin:0 4px;padding-top:0;padding-bottom:0;
+    border-color:transparent;overflow:hidden;
+    pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease, max-height .22s ease,
+               padding .22s ease, margin .22s ease;
+  }
+  body.chip-locked .sug-block::before{opacity:0}
+
+  /* ============ 改进 ③ 留白：suggest → 章节大间隔 ============ */
+  .section{margin-top:64px}
+
+  /* ============ 改进 ② 章节标题层级感 ============ */
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+  .section-title{
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .section-title h2{font-size:15.5px;font-weight:600;color:#1A1A1A;letter-spacing:-.005em}
+  .section-subtitle{font-size:11.5px;color:#9A968F;letter-spacing:.02em;font-weight:400}
+  .section-more{font-size:12.5px;color:#7A766F;display:inline-flex;align-items:center;gap:3px}
+  .section-more:hover{color:#1A1A1A}
+
+  /* 班级卡 */
+  .class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .class-card{
+    background:#FFFFFF;border:1px solid #E8E5E0;border-radius:10px;
+    padding:14px 14px 12px;cursor:pointer;
+  }
+  .class-card:hover{border-color:#C9C3BA;background:#FDFCFA}
+  .class-name{font-size:14px;font-weight:500;color:#1A1A1A;display:flex;align-items:center;justify-content:space-between}
+  .class-meta{font-size:12px;color:#9A968F;margin-top:2px}
+  .class-recent{font-size:12.5px;color:#5A5550;margin-top:10px;line-height:1.5;border-top:1px solid #F0EDE7;padding-top:10px}
+
+  /* 知识库卡 - 改进 ⑥：左 border 区分所有权 */
+  .kb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .kb-card{
+    background:#FFFFFF;border:1px solid #E8E5E0;border-radius:10px;
+    padding:14px;cursor:pointer;
+    border-left:3px solid transparent;
+  }
+  .kb-card:hover{border-color:#C9C3BA;background:#FDFCFA}
+  .kb-card.mine{border-left-color:#B89A66}
+  .kb-card.school{border-left-color:#7A8AAB}
+  .kb-card.platform{border-left-color:#1A1A1A}
+  .kb-card:hover.mine{border-left-color:#B89A66}
+  .kb-card:hover.school{border-left-color:#7A8AAB}
+  .kb-card:hover.platform{border-left-color:#1A1A1A}
+  .kb-icon{width:28px;height:28px;border-radius:7px;background:#F4F2EE;display:grid;place-items:center;color:#7A766F;margin-bottom:10px}
+  .kb-name{font-size:13.5px;font-weight:500;color:#1A1A1A}
+  .kb-desc{font-size:12px;color:#9A968F;margin-top:3px;line-height:1.5}
+  .kb-tag{display:inline-block;font-size:10.5px;color:#9A968F;letter-spacing:.04em;margin-top:6px;text-transform:uppercase;font-weight:500}
+
+  /* 任务卡 */
+  .task-list{display:flex;flex-direction:column;gap:8px}
+  .task-card{
+    background:#FFFFFF;border:1px solid #E8E5E0;border-radius:9px;
+    padding:12px 14px;display:flex;align-items:center;gap:14px;cursor:pointer;
+    position:relative;
+  }
+  .task-card:hover{border-color:#C9C3BA;background:#FDFCFA}
+  .task-type{
+    flex-shrink:0;width:36px;height:36px;border-radius:8px;
+    background:#F4F2EE;display:grid;place-items:center;color:#7A766F;
+  }
+  .task-body{flex:1;min-width:0}
+  .task-name{font-size:13.5px;color:#1A1A1A;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .task-meta{font-size:12px;color:#9A968F;margin-top:2px}
+  .task-status{font-size:12px;color:#7A766F;flex-shrink:0;display:flex;align-items:center;gap:6px}
+  .task-status.done{color:#5A8460}
+  .task-status .dot-anim{
+    width:6px;height:6px;border-radius:50%;background:#C9A76E;
+    animation:breathe 1.6s ease-in-out infinite;
+  }
+  /* 改进 ⑦：处理中加进度条 */
+  .task-progress{
+    position:absolute;left:14px;right:14px;bottom:0;height:2px;
+    background:#F0EDE7;border-radius:0 0 9px 9px;overflow:hidden;
+  }
+  .task-progress::before{
+    content:"";display:block;height:100%;width:62%;
+    background:#C9A76E;
+    border-radius:0 0 9px 9px;
+  }
+
+  /* ============ 改进 ⑧ chip 点击 → 实体选择面板（变形输入区） ============ */
+  /* mode chip 选中态 */
+  .mode-chip.active{
+    background:#1A1A1A;color:#FAFAF8;border-color:#1A1A1A;
+  }
+  .mode-chip.active svg{color:#FAFAF8}
+  .mode-chip.active .x{
+    margin-left:2px;opacity:.7;font-size:13px;line-height:1;
+  }
+
+  /* chip 面板（在 composer 内、textarea 上方） */
+  .chip-panel{
+    margin:-6px -6px 14px;padding:14px 14px 12px;
+    background:#FBF9F5;border:1px solid #ECE6D9;border-radius:12px;
+    animation:slideDown .18s ease-out;
+  }
+  @keyframes slideDown{
+    from{opacity:0;transform:translateY(-4px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .chip-panel-head{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;
+  }
+  .chip-panel-title{
+    font-size:12.5px;color:#5A5550;font-weight:500;display:flex;align-items:center;gap:6px;
+  }
+  .chip-panel-title .pin{
+    width:5px;height:5px;border-radius:50%;background:#C9A76E;
+  }
+  .chip-panel-close{
+    width:22px;height:22px;border-radius:5px;display:grid;place-items:center;
+    color:#9A968F;font-size:14px;line-height:1;
+  }
+  .chip-panel-close:hover{background:#F0EBDD;color:#5A5550}
+
+  .batch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .batch-card{
+    background:#FFFFFF;border:1px solid #E8E2D2;border-radius:8px;
+    padding:10px 11px;cursor:pointer;text-align:left;
+    transition:all .12s;position:relative;
+  }
+  .batch-card:hover{border-color:#C9A76E;background:#FFFCF5}
+  .batch-card.selected{
+    border-color:#1A1A1A;background:#FFFFFF;
+    box-shadow:0 0 0 2px rgba(26,26,26,.06);
+  }
+  .batch-card.selected::after{
+    content:"";position:absolute;top:7px;right:7px;
+    width:14px;height:14px;border-radius:50%;background:#1A1A1A;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");
+    background-size:9px;background-repeat:no-repeat;background-position:center;
+  }
+  .batch-name{font-size:13px;color:#1A1A1A;font-weight:500;line-height:1.35}
+  .batch-meta{font-size:11.5px;color:#9A968F;margin-top:3px;line-height:1.4}
+  .batch-tag{
+    display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:3px;
+    background:#F4EFE0;color:#A89A78;margin-top:6px;font-weight:500;
+  }
+  .batch-tag.done{background:#EAEFE6;color:#5A8460}
+
+  .batch-card.add{
+    background:transparent;border:1px dashed #D5CDB7;color:#7A766F;
+    display:grid;place-items:center;gap:4px;
+    text-align:center;font-size:12.5px;
+  }
+  .batch-card.add:hover{border-color:#C9A76E;color:#5A5550;background:#FFFCF5}
+
+  .chip-panel-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:10px;padding-top:9px;border-top:1px solid #ECE6D9;
+    font-size:12px;color:#9A968F;
+  }
+  .chip-panel-foot .selected-count{color:#5A5550}
+  .chip-panel-more{
+    color:#7A766F;display:inline-flex;align-items:center;gap:3px;
+  }
+  .chip-panel-more:hover{color:#1A1A1A}
+
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo"><span class="dot">飞</span>飞象 AI</div>
+      <button class="sb-fold" title="收起侧栏">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19l-7-7 7-7M19 19l-7-7 7-7"/></svg>
+      </button>
+    </div>
+
+    <div class="sb-item active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+      新对话
+    </div>
+    <div class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      历史对话
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">班级</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(3)班<span class="badge">48</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高一(5)班<span class="badge">52</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>高二(1)班<span class="badge">46</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">资源</div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        知识库
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg>
+        最近任务
+      </div>
+    </div>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sb-foot">
+      <div class="sb-item" style="margin-bottom:4px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        教务
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar">张</div>
+        <div>
+          <div class="sb-uname">张老师</div>
+          <div class="sb-urole">高一语文 · 实验中学</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="stage">
+
+      <div class="hero">
+        <h1>下午好，张老师</h1>
+      </div>
+
+      <!-- composer 视觉权重放大 -->
+      <div class="composer">
+
+        <!-- 改进 ⑧：chip 选中后弹出的实体选择面板（默认隐藏） -->
+        <div class="chip-panel" id="chipPanel" style="display:none">
+          <div class="chip-panel-head">
+            <div class="chip-panel-title"><span class="pin"></span><span id="panelTitle">选一批要批改的作文</span></div>
+            <button class="chip-panel-close" id="panelClose" title="关闭">✕</button>
+          </div>
+          <div class="batch-grid" id="batchGrid"></div>
+          <div class="chip-panel-foot">
+            <span class="selected-count" id="selectedCount">未选 · 也可直接在下方描述</span>
+            <a class="chip-panel-more" href="#" id="panelMore">全部最近批次 ›</a>
+          </div>
+        </div>
+
+        <textarea id="composerInput" placeholder="想做什么？比如：把昨天扫的高一(3)班作文按错因分类整理一下"></textarea>
+
+        <!-- 改进 ④ mode chip → 工具感 -->
+        <div class="modes" id="modesRow">
+          <button class="mode-chip" data-chip="批改"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>作文批改</button>
+          <button class="mode-chip" data-chip="组题"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H1l8-8 8 8h-8v8l-4-4 4-4"/></svg>AI 组题</button>
+          <button class="mode-chip" data-chip="错因"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>错因分析</button>
+          <button class="mode-chip" data-chip="课件"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>教学课件</button>
+          <button class="mode-chip" data-chip="ppt"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>PPT</button>
+          <button class="mode-chip more"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+        </div>
+
+        <div class="composer-foot">
+          <div class="left">
+            <button class="icon-btn" title="附件"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+            <button class="icon-btn" title="语音"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg></button>
+          </div>
+          <button class="send-btn" id="sendBtn" title="发送"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <!-- 飞象建议 → 框下耳语式（同色 + 小三角指向 composer），chip 选中时收起 -->
+      <div class="sug-block" id="sugBlock">
+        <div class="sug-block-bar">
+          <span class="dot"></span>
+          <span class="sug-block-label">从这里开始</span>
+          <span class="sug-block-meta">基于你近 7 天的工作 · 3 条</span>
+          <button class="sug-block-close" id="sugClose" title="本周不再提示">✕</button>
+        </div>
+        <div class="pill-row">
+          <button class="pill" data-fill="高一(3)班昨天扫的 48 份作文还没分析"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>高一(3)班昨天扫的 48 份作文还没分析</button>
+          <button class="pill" data-fill="高一(5)班议论文有 7 个学生立论偏题，做一份订正小测">高一(5)班议论文有 7 个学生立论偏题，做一份订正小测</button>
+          <button class="pill" data-fill="为下周《我与地坛》设计 3 道思辨型题">为下周《我与地坛》设计 3 道思辨型题</button>
+        </div>
+      </div>
+
+      <!-- 改进 ③ 大间隔分隔"输入区" vs "实体区" -->
+
+      <!-- 改进 ② 章节标题层级感（标题加副标题） -->
+      <section class="section">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>你的班级</h2>
+            <span class="section-subtitle">3 个班 · 146 名学生</span>
+          </div>
+          <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="class-grid">
+          <div class="class-card">
+            <div class="class-name">高一(3)班 <span style="font-size:11px;color:#9A968F;font-weight:400">48 人</span></div>
+            <div class="class-meta">高一语文</div>
+            <div class="class-recent">3 天前 · 飞象高扫批改 48 份《我的母亲》</div>
+          </div>
+          <div class="class-card">
+            <div class="class-name">高一(5)班 <span style="font-size:11px;color:#9A968F;font-weight:400">52 人</span></div>
+            <div class="class-meta">高一语文</div>
+            <div class="class-recent">昨天 · 议论文专题练习已完成</div>
+          </div>
+          <div class="class-card">
+            <div class="class-name">高二(1)班 <span style="font-size:11px;color:#9A968F;font-weight:400">46 人</span></div>
+            <div class="class-meta">高二语文</div>
+            <div class="class-recent">5 天前 · 月考阅卷与错题归集</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="margin-top:36px">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>最近任务</h2>
+            <span class="section-subtitle">12 项 · 1 项处理中</span>
+          </div>
+          <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="task-list">
+          <div class="task-card">
+            <div class="task-type"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/></svg></div>
+            <div class="task-body">
+              <div class="task-name">议论文《我的母亲》批改</div>
+              <div class="task-meta">高一(3)班 · 48 份 · 3 天前完成</div>
+            </div>
+            <div class="task-status done">已批改</div>
+          </div>
+          <!-- 改进 ⑦：处理中加进度条 + 跳动点 -->
+          <div class="task-card" style="padding-bottom:14px">
+            <div class="task-type"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+            <div class="task-body">
+              <div class="task-name">高一(5)班议论文错因聚类</div>
+              <div class="task-meta">52 份 · 昨天 · 检出 7 类错误</div>
+            </div>
+            <div class="task-status">
+              <span class="dot-anim"></span>分析中 · 62%
+            </div>
+            <div class="task-progress"></div>
+          </div>
+          <div class="task-card">
+            <div class="task-type"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+            <div class="task-body">
+              <div class="task-name">《我与地坛》课件初稿</div>
+              <div class="task-meta">高二(1)班 · 12 页 · 5 天前</div>
+            </div>
+            <div class="task-status">草稿</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="margin-top:36px">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>知识库</h2>
+            <span class="section-subtitle">本周新增 12 篇</span>
+          </div>
+          <a class="section-more" href="#">查看全部 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <!-- 改进 ⑥：知识库三张卡左 border 区分所有权 -->
+        <div class="kb-grid">
+          <div class="kb-card mine">
+            <div class="kb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="kb-name">我的知识库</div>
+            <div class="kb-desc">128 篇文档 · 你上传的教学材料</div>
+            <span class="kb-tag" style="color:#B89A66">个人</span>
+          </div>
+          <div class="kb-card school">
+            <div class="kb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg></div>
+            <div class="kb-name">校本资源库</div>
+            <div class="kb-desc">实验中学 · 全校共享 1.2k 文档</div>
+            <span class="kb-tag" style="color:#7A8AAB">学校</span>
+          </div>
+          <div class="kb-card platform">
+            <div class="kb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div class="kb-name">飞象知识库</div>
+            <div class="kb-desc">学科教材 · 课标 · 历年真题</div>
+            <span class="kb-tag" style="color:#1A1A1A">平台</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* ============ chip 点击 → 变形输入区 ============ */
+const DEFAULT_PLACEHOLDER = '想做什么？比如：把昨天扫的高一(3)班作文按错因分类整理一下';
+
+const CHIP_CONFIG = {
+  /* 实体驱动型：弹面板让老师选具体批次 */
+  '批改': {
+    type: 'panel',
+    placeholder: '批改这一批，重点关注……（比如：立论是否扣题、论据是否充分）',
+    panelTitle: '选一批要批改的作文',
+    moreText: '去高扫上传新的 ›',
+    items: [
+      { name: '高一(3)班 议论文', meta: '48 份 · 昨天 14:32 上传', tag: '待批改', tagClass:'' },
+      { name: '高一(5)班 议论文', meta: '52 份 · 3 天前上传',     tag: '待批改', tagClass:'' },
+      { name: '自由作文', meta: '5 份 · 2 天前上传',                tag: '待批改', tagClass:'' },
+      { add: true, label: '＋ 上传新的' }
+    ]
+  },
+  '错因': {
+    type: 'panel',
+    placeholder: '分析错因，比如：按知识点分类 / 找共性问题 / 给出订正建议',
+    panelTitle: '分析哪批的错因？',
+    moreText: '全部最近批次 ›',
+    items: [
+      { name: '高一(3)班《我的母亲》', meta: '48 份 · 已批 · 3 天前', tag: '已批改', tagClass:'done' },
+      { name: '高一(5)班 议论文', meta: '52 份 · 已批 · 昨天',       tag: '已批改', tagClass:'done' },
+      { name: '高二(1)班 月考', meta: '46 份 · 已批 · 5 天前',       tag: '已批改', tagClass:'done' }
+    ]
+  },
+  /* 描述驱动型：仅改 placeholder，不弹面板（对照组） */
+  '组题': {
+    type: 'placeholder',
+    placeholder: '想出什么样的题？比如：高一议论文 10 道选择 + 2 道作文，难度中等'
+  },
+  '课件': {
+    type: 'placeholder',
+    placeholder: '为哪节课做课件？比如：《我与地坛》第二课时，重点讲生命主题'
+  },
+  'ppt': {
+    type: 'placeholder',
+    placeholder: 'PPT 主题是什么？比如：高一文言文复习要点回顾'
+  }
+};
+
+const chipPanel = document.getElementById('chipPanel');
+const panelTitle = document.getElementById('panelTitle');
+const panelMore = document.getElementById('panelMore');
+const batchGrid = document.getElementById('batchGrid');
+const selectedCount = document.getElementById('selectedCount');
+const composerInput = document.getElementById('composerInput');
+const panelClose = document.getElementById('panelClose');
+const modesRow = document.getElementById('modesRow');
+
+let activeChip = null;
+let selectedBatches = new Set();
+
+function resetComposer(){
+  activeChip = null;
+  selectedBatches.clear();
+  chipPanel.style.display = 'none';
+  composerInput.placeholder = DEFAULT_PLACEHOLDER;
+  modesRow.querySelectorAll('.mode-chip').forEach(c => {
+    c.classList.remove('active');
+    const x = c.querySelector('.x'); if(x) x.remove();
+  });
+  /* chip 取消 → 建议区"耳语"再次浮现 */
+  document.body.classList.remove('chip-locked');
+}
+
+function renderPanel(cfg){
+  panelTitle.textContent = cfg.panelTitle;
+  panelMore.textContent = cfg.moreText;
+  batchGrid.innerHTML = cfg.items.map((it, i) => {
+    if(it.add){
+      return `<button class="batch-card add" data-add="1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
+        ${it.label}
+      </button>`;
+    }
+    return `<button class="batch-card" data-i="${i}">
+      <div class="batch-name">${it.name}</div>
+      <div class="batch-meta">${it.meta}</div>
+      <span class="batch-tag ${it.tagClass}">${it.tag}</span>
+    </button>`;
+  }).join('');
+
+  batchGrid.querySelectorAll('.batch-card[data-i]').forEach(card => {
+    card.addEventListener('click', () => {
+      const i = card.dataset.i;
+      if(selectedBatches.has(i)){
+        selectedBatches.delete(i);
+        card.classList.remove('selected');
+      } else {
+        selectedBatches.add(i);
+        card.classList.add('selected');
+      }
+      updateSelectedCount();
+    });
+  });
+  batchGrid.querySelectorAll('.batch-card[data-add]').forEach(card => {
+    card.addEventListener('click', () => {
+      alert('（演示）唤起飞象高扫上传');
+    });
+  });
+}
+
+function updateSelectedCount(){
+  const n = selectedBatches.size;
+  if(n === 0){
+    selectedCount.textContent = '未选 · 也可直接在下方描述';
+  } else {
+    selectedCount.textContent = `已选 ${n} 批 · 在下方继续描述要求`;
+  }
+}
+
+modesRow.addEventListener('click', (e) => {
+  const chip = e.target.closest('.mode-chip[data-chip]');
+  if(!chip) return;
+  const key = chip.dataset.chip;
+  const cfg = CHIP_CONFIG[key];
+  if(!cfg) return;
+
+  /* 再次点击同一个 chip → 关闭 */
+  if(activeChip === chip){
+    resetComposer();
+    return;
+  }
+
+  /* 切到新 chip：先重置 */
+  resetComposer();
+  activeChip = chip;
+  chip.classList.add('active');
+  /* chip 选中 → 建议区收起，让位给"作业流" */
+  document.body.classList.add('chip-locked');
+  /* 加 ✕ 提示可关闭 */
+  const x = document.createElement('span');
+  x.className = 'x'; x.textContent = '×';
+  chip.appendChild(x);
+
+  composerInput.placeholder = cfg.placeholder;
+
+  if(cfg.type === 'panel'){
+    renderPanel(cfg);
+    chipPanel.style.display = 'block';
+    updateSelectedCount();
+  }
+});
+
+panelClose.addEventListener('click', resetComposer);
+
+/* 飞象建议 pill → 填入输入框（用 data-fill 避免 SVG 文本污染） */
+document.querySelectorAll('.sug-block .pill[data-fill]').forEach(p => {
+  p.addEventListener('click', () => {
+    composerInput.value = p.dataset.fill;
+    composerInput.focus();
+  });
+});
+
+/* 关闭建议区（"本周不再提示"） */
+const sugBlock = document.getElementById('sugBlock');
+const sugClose = document.getElementById('sugClose');
+if(sugClose){
+  sugClose.addEventListener('click', () => {
+    sugBlock.style.transition = 'opacity .18s ease, transform .18s ease, max-height .22s ease, padding .22s ease, margin .22s ease';
+    sugBlock.style.opacity = '0';
+    sugBlock.style.transform = 'translateY(-4px)';
+    sugBlock.style.maxHeight = '0';
+    sugBlock.style.padding = '0 16px';
+    sugBlock.style.margin = '0 4px';
+    sugBlock.style.overflow = 'hidden';
+    setTimeout(() => sugBlock.remove(), 240);
+  });
+}
+
+/* ============ 发送 → 跳转对话页 ============
+   规则：
+   - 选了"作文批改"chip + 选了任意批次 → 跳到 dialog-composition-grading 页（演示主链路）
+   - 其他场景 → 弹提示（v8.4 阶段先聚焦"作文批改 → 学情对话"这条主链路）
+*/
+const sendBtn = document.getElementById('sendBtn');
+
+function goDialog(){
+  const q = composerInput.value.trim() || '这一批整体怎么样？';
+  /* 编码后跳转，目标页会把 q 渲染到第一条用户消息 */
+  location.href = `../v23-ai-conversation/dialog-composition-grading.html?q=${encodeURIComponent(q)}`;
+}
+
+sendBtn.addEventListener('click', () => {
+  /* 主链路：作文批改 chip 已选 + 至少选了一个批次 */
+  if(activeChip && activeChip.dataset.chip === '批改' && selectedBatches.size > 0){
+    goDialog();
+    return;
+  }
+  /* 主链路兜底：作文批改 chip 已选但还没选批次 → 也允许跳（演示更顺） */
+  if(activeChip && activeChip.dataset.chip === '批改'){
+    goDialog();
+    return;
+  }
+  /* 其他场景：演示阶段先提示 */
+  alert('（演示阶段）当前已打通：选「作文批改」→ 选批次 → 发送 → 进入学情对话页。\n\n其他链路（组题 / 错因 / 课件 / PPT）将在后续 demo 中补齐。');
+});
+
+/* 回车（不带 shift）也触发发送 */
+composerInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+</script>
+
+</body>
+</html>
